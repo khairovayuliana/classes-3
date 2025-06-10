@@ -1,127 +1,148 @@
-# СТРУКТУРЫ
+# ГЕТТЕРЫ И СЕТТЕРЫ  
+Представь, что у тебя есть младший брат лет десяти-двенадцати, который ВЕЧНО лезет в твои вещи! Знакомо ведь? Так вот, ты купил себе новый Wi-Fi роутер и не хочешь, чтобы он:
+1. Менял пароль (иначе никто не сможет подключиться).
+2. Видел пароль просто так (а то ведь разболтает друзьям, а ты не хочешь чтобы твой интернет поедали дети).  
 
-## ПО БАЗЕ
-
-**Задача:**
-Представь, что тебе даны данные об успеваемости 4 учеников по теоретической информатике, пользовательскому курсу и программированию.
-Необходимо вывести имена и фамилии тех, у кого нет ни одной двойки по программированию и тех, у кого не больше одной тройки по теоретической информатике.
-
-**Инициализируем переменные:**
+Так вот геттеры и сеттеры — это что-то типа _правил дома_, которые _защищают данные твоего класса от хаоса_.
 ```cpp
-string student_name[4];
-string student_surname[4];
-int student_theoretical_info_marks[4];
-int student_pk_marks[4];
-int student_programming_marks[4];
-```
+class MyWiFiRouter {
+private:
+    string password = "123"; // приватное поле (пароль)
+public:
+    // Геттер — "узнать пароль, но перед этим убедиться, что человеку можно доверять"
+    string getPassword(const string& secretWord) const {
+        if (secretWord == "ЭтоЖеЯ") {
+            return password;
+        }
+        return "А тебе доступ запрещён!";
+    }
 
-А если бы нужно было хранить информацию об успеваемости по всем предметам? =)
-ФИО родителей? =))
-Количество и название элективов (предметов по выбору)? =)))
-
-**На помощь приходят структуры!**
-
-```cpp
-struct имя {
-
-    тип_поля поле1;
-
-    тип_поля поле2;
-
-    ...
-
+    // Сеттер — "изменить пароль, но только если старый введен верно"
+    void setPassword(const string& oldPassword, const string& newPassword) {
+        if (oldPassword == password) {
+            password = newPassword;
+            cout << "Пароль изменён!";
+        } else {
+            cout << "Неверно введен старый пароль!";
+        }
+    }
 };
-
-int main() {
-
-    ...
-
-}
 ```
-Пример:
+- _Для получения доступа к приватным данным в классе нужно использовать публичные методы._  
+- _Для получения значения полей и их изменения используются методы, называемые геттерами и сеттерами соответственно._
+
+У тебя есть класс `LyceumStudent`:
 ```cpp
-struct Point {
-
-    double x;
-
-    double y;
-
-
+#include<iostream>
+#include<vector>
+#include<unordered_map>
+using namespace std;
+class LyceumStudent {
+private:
+    string name, surname;
+    unordered_map<string, vector<int>> marks;
+public:
+    // Геттеры и сеттеры для name
+    string getName() const {
+        return name;
+    }
+    void setName(const string& newName) {
+        name = newName;
+    }
+    
+    // Геттеры и сеттеры для surname
+    string getSurname(){
+        return surname;
+    }
+    
+    void setSurname(const string& newSurname) {
+        surname = newSurname;
+    }
+    
+    // Геттер и сеттер для marks
+    const unordered_map<string, vector<int>>& getMarks(){
+        return marks;
+    }
+    
+    void setMarks(const unordered_map<string, vector<int>>& newMarks) {
+        marks = newMarks;
+    }
+    
 };
-
-int main() {
-
-    Point p1 = {1.0, 2.0};
-
-}
-```
-
-**Использование структур**
-*Для обращения к полю структуры, необходимо прописать имя поля через оператор '.' (имя + точка + поле)*
-
-Пример ввода и вывода координат x и y точки (Объект p1):
-
-```cpp
-Point p1;
-cin >> p1.x >> p1.y;
-cout << p1.x << " " << p1.y;
-```
-**Вывести просто структуру не получится!**
-`cout << p1; // ОШИБКА!`
-
-Присваивание значений полям структуры:
-```cpp
-p1.x = 1.23;
-
-p1.y = 0.98;
-```
-Также допустимо присваивание одинаковых структур:
-`Point p2 = p1;`
-
-## ПОСЛОЖНЕЕ
-## Работа со структурами и векторами в C++
-Допустим,  у нас есть вот такая структура, где  мы храним данные об одном ученике:
-``` cpp
-struct Student {
-
+int main(){
     string name;
-
-    string surname;
-
-    int age;
-
-    vector<int> grades;  // Вектор внутри структуры!
-
-};
+    LyceumStudent s;
+    s.setName("Juliana");
+    cout << s.getName();
+}
 ```
-`vector<Student> students;  // Вектор структур`
-- Student — структура с полями (включая вложенный вектор оценок).
-- students — вектор с учениками (размер можно менять).
+Рассмотрим __геттеры (getters)__ и __сеттеры (setters)__ на примере их использования для поля `name` в классе `LyceumStudent`:
+1. __Геттер (getter) — метод для получения значения из непубличного поля класса__  
+```cpp
+string getName(){
+    return name;
+}
+
+
+string getName() const {
+    return name;
+}
+```
+- **Тип возвращаемого значения:** `string` (так как `name` имеет тип `string`).
+
+- **Название метода:** Обычно начинается с get + имя поля (`getName`).
+
+- **Модификатор `const` (необязательно):** Он показывает, что метод не изменяет состояние объекта, а только читает поле. 
+
+- **Но без `const` может возникнуть проблема:** такой геттер **нельзя вызвать у константного объекта**
+
+- **Возвращает:** Значение поля `name`.
+
+2. **Сеттер (setter) — метод для изменения значения непубличного поля класса**
+```cpp
+void setName(const string& newName) {
+    name = newName;
+}
+```
+- **Тип возвращаемого значения:** `void` (так как метод только устанавливает значение, ничего не возвращая).
+
+- **Название метода:** Обычно начинается с set + имя поля (`setName`).
+
+- **Параметр:** Принимает новое значение переменной:
+
+    - `const string&` — константная ссылка (чтобы избежать копирования строки).
+
+    - `newName` — новое имя, которое будет записано в поле name.
+
+- Метод присваивает полю name переданное значение (`name = newName`).
+
+
+## Безопасный сеттер с проверкой входных значений
+Кажется, что все хорошо, но на самом деле есть небольшая проблема: а что будет, если пользователь решит присвоить себе несуществующую оценку? Представь, что младшеклассники решили побаловаться и поставить себе оценку 10, хотя в их школе 5-балльная шкала. Или вообще решили поиздеваться над своим другом и поставить ему -5.  
+Нам нужно изменить сеттер `setMarks`, добавив в него проверку на то, что оценка находится в нужном нам диапазоне, например, от 1 до 5. 
 
 ```cpp
-// Добавляем студентов через push_back (можно инициализировать сразу) - создается объект перед записыванием его в структуру
-students.push_back({"Masha", "Petrova", 16, {5, 4, 5}});
-students.push_back({"Ivan", "Popov", 17, {4, 4, 3}});
+void setMarks(const unordered_map<string, vector<int>>& newMarks) {
+    bool isValid = true;
 
-// без создания объекта через emplace_back
-students.emplace_back("Ivan", "Ivanov", 18, vector<int>{5, 5, 5});
+    for (const std::pair<const std::string, std::vector<int>>& subjectEntry : newMarks) {
+        const string& subject = subjectEntry.first;
+        const vector<int>& grades = subjectEntry.second;
 
-students[0].age = 17; // Изменяем данные через индексы, к полю структуры обращаемся через точку
-students[1].grades.push_back(5);  // Добавили оценку первому ученику в вектор оценок внутри структуры
-```
-**Итерация по вектору структур**
-```cpp
-// с явным указанием типа
-for (const Student& student : students) {
-    cout << student.name << ": " << student.age << " лет\n";
-}
+        for (int mark : grades) {
+            if (mark < 1 || mark > 5) {
+                cout << "Ошибка: оценка " << mark << " по предмету '" 
+                     << subject << "' недопустима!\n";
+                isValid = false;
+                break;
+            }
+        }
+        if (!isValid) break;
+    }
 
-// через auto
-for (const auto& student : students) {
-    cout << student.name << ": " << student.age << " лет\n";
-}
-// Через индексы
-for (size_t i = 0; i < students.size(); i++) {
-    cout << students[i].surname << "\n";
+    if (isValid) {
+        marks = newMarks;
+    }
 }
 ```
+
