@@ -4,15 +4,15 @@
 #include <string>
 
 class BankAccount {
-private:
+  private:
     // your code here
 
-public:
+  public:
     // Геттеры
     std::string getAccountNumber() const;
     double getBalance() const;
 
     // Сеттеры
-    void setAccountNumber(const std::string &newNumber);
+    void setAccountNumber(const std::string& newNumber);
     void setBalance(double newBalance);
 };
